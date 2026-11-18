@@ -1,0 +1,5 @@
+# Scripts run on lxplus: keep Unix line endings whatever the Windows git settings are
+*.sh  text eol=lf
+*.sub text eol=lf
+*.py  text eol=lf
+*.dag text eol=lf

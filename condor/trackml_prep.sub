@@ -1,0 +1,15 @@
+# hsf2_work/data/raw/train_1.zip -> hsf2_work/data/<DD-MM-YYYY-HH-MM>_trackml/  (680 events = 300 train / 30 val /
+# 50 tune / 3 x 100 confirm; hits + truth + particles as compressed .npz).  Needs the finished download; without it
+# use  arguments = python -m hsf2 trackml-prep --zip zenodo:train_1.zip --workers 4  (~10 MB per event from Zenodo).
+# Self-contained: run.sh activates the Part-II venv and sets every HSF2_* path (getenv = False).
+# Submit from ~/hsf2_condor (AFS; a copy of Optimization/hsf2_condor, logs/ inside it).
+executable     = run.sh
+arguments      = python -m hsf2 trackml-prep
+getenv         = False
+output         = logs/prep_$(ClusterId).out
+error          = logs/prep_$(ClusterId).err
+log            = logs/prep_$(ClusterId).log
+request_cpus   = 1
+request_memory = 4000
++JobFlavour    = "workday"
+queue

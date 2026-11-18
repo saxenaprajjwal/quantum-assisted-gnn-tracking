@@ -1,0 +1,21 @@
+# HSF Part II -- Python requirements (Part II runs in its OWN venv with the latest Qiskit stack; Phase 1's
+# ParOpt_PyEnv with qiskit 1.4.2 is never modified).
+#
+# lxplus:  bash hsf2_scripts/setup_hsf2_venv.sh   (installs the newest versions of these + CPU PyTorch from
+#          https://download.pytorch.org/whl/cpu, and records the exact versions in hsf2_work/env/pip_freeze_*.txt)
+# PC:      python -m venv .venv && .venv\Scripts\pip install torch --index-url https://download.pytorch.org/whl/cpu
+#          && .venv\Scripts\pip install -r requirements.txt
+#
+# Lower bounds = the versions the code was validated with on 30 Oct 2026 (40 Part-II tests, the Phase-1 selftest
+# and the Phase-1 hardware path in local-test mode): qiskit 2.6.1, qiskit-aer 0.17.2, qiskit-ibm-runtime 0.51.0,
+# numpy 2.2.6, scipy 1.15.3, pandas 2.3.3, torch 2.14.1 (CPU), optuna 5.0.0.
+
+numpy>=2.0
+scipy>=1.13
+pandas>=2.2
+matplotlib>=3.8
+pytest>=8
+optuna>=5.0
+qiskit>=2.6
+qiskit-aer>=0.17.2
+qiskit-ibm-runtime>=0.51

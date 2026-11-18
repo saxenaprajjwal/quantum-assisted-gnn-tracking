@@ -1,0 +1,18 @@
+# QX1: exhaustive 16-bit landscape of the real objective (4^8 = 65,536 knob settings x every tuning event)
+# -> hsf2_work/runs/<DD-MM-YYYY-HH-MM>_qx1_landscape/  (landscape.npz, summary.json, verification.json, events/*.npz)
+# Cost measured on the PC: 13-50 CPU s per (event, filter setting) unit; 50 tune events x 64 units -> ~2-6 h on 8 cores.
+# Resumable: if the job is evicted, add  --out <absolute path of the same folder>  to the arguments and resubmit.
+# Self-contained: run.sh activates the Part-II venv and sets every HSF2_* path (getenv = False).
+# Submit from ~/hsf2_condor (AFS; a copy of Optimization/hsf2_condor, logs/ inside it).
+executable     = run.sh
+arguments      = python -m hsf2 tune-landscape --model latest --split tune --workers 8
+getenv         = False
+output         = logs/landscape_$(ClusterId).out
+error          = logs/landscape_$(ClusterId).err
+log            = logs/landscape_$(ClusterId).log
+request_cpus   = 8
+request_memory = 16000
++JobFlavour    = "tomorrow"
+# e-mail to <user>@cern.ch when the job ends (success or failure)
+notification   = Complete
+queue

@@ -1,0 +1,23 @@
+# Objective sensitivity (v0.2.4; owner's decision of 4 Nov 2026: S kept as specified, AND reruns with variants):
+#   B   S_DM      eff -> double-majority efficiency            (--score-eff efficiency_dm)
+#   C1  S, t/20   a 4x smaller weight of the time term          (--k-time 20)
+#   C2  S + floor 10 * max(0, 0.99 - DM efficiency) penalty     (--dm-floor 0.99)
+# Every variant: the QX1 optimiser comparison on the EXISTING exact landscape (no new GNN evaluations, 1 core) and
+# the QX2 24-bit closed loop on the real objective with confirmation (tune_8core.sub: 8 cores, ~1 h).
+# objectives: optimum of S and of every variant on the landscape, physics-safe edge reductions (minutes, 1 core).
+# Submit from ~/hsf2_condor (AFS) after deploying v0.2.4:   condor_submit_dag part2_objectives.dag
+# Nodes are independent (no PARENT lines): each starts when it gets a slot.
+JOB objectives hsf2_cmd.sub
+VARS objectives ARGS="tune-objectives --landscape latest" NAME="objectives"
+JOB cmp_dm     hsf2_cmd.sub
+VARS cmp_dm    ARGS="tune-compare --landscape latest --seeds 0-19 --score-eff efficiency_dm" NAME="cmp_dm" MEMORY="4000"
+JOB cmp_t20    hsf2_cmd.sub
+VARS cmp_t20   ARGS="tune-compare --landscape latest --seeds 0-19 --k-time 20" NAME="cmp_t20" MEMORY="4000"
+JOB cmp_floor  hsf2_cmd.sub
+VARS cmp_floor ARGS="tune-compare --landscape latest --seeds 0-19 --dm-floor 0.99" NAME="cmp_floor" MEMORY="4000"
+JOB loop_dm    tune_8core.sub
+VARS loop_dm   ARGS="tune-loop --model latest --split tune --workers 8 --seeds 0-2 --budget 100 --score-eff efficiency_dm" NAME="loop_dm"
+JOB loop_t20   tune_8core.sub
+VARS loop_t20  ARGS="tune-loop --model latest --split tune --workers 8 --seeds 0-2 --budget 100 --k-time 20" NAME="loop_t20"
+JOB loop_floor tune_8core.sub
+VARS loop_floor ARGS="tune-loop --model latest --split tune --workers 8 --seeds 0-2 --budget 100 --dm-floor 0.99" NAME="loop_floor"

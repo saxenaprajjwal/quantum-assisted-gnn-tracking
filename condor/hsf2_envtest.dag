@@ -1,0 +1,5 @@
+# 5-minute check that DAG nodes run in the Part-II venv (latest Qiskit) with the hsf2_work paths.
+#   cd ~/hsf2_condor && condor_submit_dag hsf2_envtest.dag
+#   then:  cat logs/envtest_*.out     (must end with "ALL PASSED")
+JOB envtest hsf2_cmd.sub
+VARS envtest ARGS="selftest --quick" NAME="envtest" FLAVOUR="espresso"

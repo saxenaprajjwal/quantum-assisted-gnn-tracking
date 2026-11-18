@@ -1,0 +1,16 @@
+# Download TrackML detectors.csv + train_1.zip (16 GB) from Zenodo into hsf2_work/data/raw -- resumable,
+# MD5-verified.  If the job is interrupted, submit it again: it continues where it stopped.
+# Self-contained: run.sh activates the Part-II venv and sets every HSF2_* path (getenv = False).
+# Submit from ~/hsf2_condor (AFS; a copy of Optimization/hsf2_condor, logs/ inside it).
+#   condor_submit download_trackml.sub      progress:  tail -f logs/download_<ClusterId>.out
+executable     = run.sh
+arguments      = script trackml_download.sh
+getenv         = False
+output         = logs/download_$(ClusterId).out
+error          = logs/download_$(ClusterId).err
+log            = logs/download_$(ClusterId).log
+request_cpus   = 1
+request_memory = 2000
+# espresso=20min microcentury=1h longlunch=2h workday=8h tomorrow=1d testmatch=3d nextweek=1w
++JobFlavour    = "workday"
+queue

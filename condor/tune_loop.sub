@@ -1,0 +1,17 @@
+# QX2: 24-bit surrogate -> QUBO -> sampler closed loop on the REAL objective (tune split), baselines with the same
+# budget, confirmation of every pick on the held-out confirm<k> splits -> hsf2_work/runs/<stamp>_qx2_loop/
+# ~10 s per evaluation of 50 tune events on 8 cores; 3 seeds x 8 methods x 100 evaluations (shared cache) ~ 6-8 h.
+# Self-contained: run.sh activates the Part-II venv and sets every HSF2_* path (getenv = False).
+# Submit from ~/hsf2_condor (AFS; a copy of Optimization/hsf2_condor, logs/ inside it).
+executable     = run.sh
+arguments      = python -m hsf2 tune-loop --model latest --split tune --workers 8 --seeds 0-2 --budget 100
+getenv         = False
+output         = logs/loop_$(ClusterId).out
+error          = logs/loop_$(ClusterId).err
+log            = logs/loop_$(ClusterId).log
+request_cpus   = 8
+request_memory = 16000
++JobFlavour    = "tomorrow"
+# e-mail to <user>@cern.ch when the job ends (success or failure)
+notification   = Complete
+queue

@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Data, trained models and results are large and live on EOS (copied to the PC at the freeze).
+# Anchored with a leading "/": an unanchored "data/" also matched the source package hsf2/data/, which was
+# therefore never committed (rebuilt from its byte code in v0.2.0).
+/data/
+/models/
+/runs/
+/results/
+discover_*.txt
+
+# LaTeX build artifacts (docs/ is rebuilt with pdflatex)
+docs/*.aux
+docs/*.log
+docs/*.out
+docs/*.toc
+docs/*.listing
+docs/*.bbl
+docs/*.blg
+docs/report/*.aux
+docs/report/*.log
+docs/report/*.out
+
+# Credentials -- never commit (the IBM token lives only in ~/ibm_creds.json on lxplus)
+*creds*.json
+*apikey*.json
+setup_ibm_credentials.py
+docs/build*.txt
+
+# Reference papers (third-party PDFs) stay local
+literature/*.pdf
+/dist/
+
+# latexmk bookkeeping
+docs/*.fdb_latexmk
+docs/*.fls
+docs/report/*.fdb_latexmk
+docs/report/*.fls
+docs/report/*.toc
+
+# preprint build files
+docs/preprint/*.aux
+docs/preprint/*.log
+docs/preprint/*.out
+docs/preprint/*.fdb_latexmk
+docs/preprint/*.fls

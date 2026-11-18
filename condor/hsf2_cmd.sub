@@ -1,0 +1,19 @@
+# Any hsf2 command as an HTCondor job (ARGS is required; CPUS, MEMORY [MB], NAME, FLAVOUR have defaults):
+#   condor_submit hsf2_cmd.sub ARGS="select --model latest --max-events 20" NAME=select
+#   condor_submit hsf2_cmd.sub ARGS="evaluate --model latest --split confirm1" NAME=eval_c1 CPUS=4
+# In DAGs the same macros come from VARS lines.  No in-file defaults for ARGS/NAME, so a VARS value can never be
+# shadowed by a file value ($(X:default) supplies a default only when X is undefined).
+# Self-contained: run.sh activates the Part-II venv and sets every HSF2_* path (getenv = False). Submit from ~/hsf2_condor.
+executable     = run.sh
+arguments      = python -m hsf2 $(ARGS)
+environment    = "OMP_NUM_THREADS=$(CPUS:1)"
+getenv         = False
+output         = logs/$(NAME:hsf2)_$(ClusterId).out
+error          = logs/$(NAME:hsf2)_$(ClusterId).err
+log            = logs/$(NAME:hsf2)_$(ClusterId).log
+request_cpus   = $(CPUS:1)
+request_memory = $(MEMORY:8000)
++JobFlavour    = "$(FLAVOUR:workday)"
+# e-mail to <user>@cern.ch when the job ends (success or failure)
+notification   = Complete
+queue

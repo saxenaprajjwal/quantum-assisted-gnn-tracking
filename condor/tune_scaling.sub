@@ -1,0 +1,20 @@
+# QX6: QAOA p=1 on the same tuning problem at 16..32 qubits (Aer statevector) vs exact, SA and random, and the picks
+# on the real objective -> hsf2_work/runs/<stamp>_qx6_scaling/.  Needs a FINISHED QX2 loop (--source qx2: the
+# surrogate is fitted on all its real evaluations); submit after tune_loop is done.
+# Memory: the 32-qubit statevector is 34 GB in single precision and 69 GB in double precision (used only if Aer's
+# single-precision check fails on the node); 48 GB covers every size up to 32 in single and up to 31 in double, and a
+# size that does not fit is skipped and recorded, not crashed.  CERN batch gives 3 GB per requested core.
+# Resume an evicted job: add --out <absolute path of the same qx6 folder> (finished sizes are kept).
+# Self-contained: run.sh activates the Part-II venv and sets every HSF2_* path (getenv = False).
+executable     = run.sh
+arguments      = python -m hsf2 tune-scaling --source qx2 --model latest --split tune --threads 16 --max-memory-gb 46 --workers 4
+getenv         = False
+output         = logs/scaling_$(ClusterId).out
+error          = logs/scaling_$(ClusterId).err
+log            = logs/scaling_$(ClusterId).log
+request_cpus   = 16
+request_memory = 48000
++JobFlavour    = "tomorrow"
+# e-mail to <user>@cern.ch when the job ends (success or failure)
+notification   = Complete
+queue

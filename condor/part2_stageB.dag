@@ -1,0 +1,9 @@
+# Stage B (submit ONLY after the knob ranges were re-fixed from the stage-A scans and the updated code was deployed):
+#   QX1 landscape -> QX1 optimiser comparison;  QX2 closed loop + confirmation;  QX3 selection.
+#   condor_submit_dag part2_stageB.dag
+JOB landscape  tune_landscape.sub
+JOB compare    tune_compare.sub
+JOB loop       tune_loop.sub
+JOB select     hsf2_cmd.sub
+VARS select    ARGS="select --model latest --max-events 20" NAME="select"
+PARENT landscape CHILD compare

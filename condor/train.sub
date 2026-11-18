@@ -1,0 +1,16 @@
+# Train the Interaction Network on the newest data folder (S0: hits of particles with pT >= 1 GeV)
+# -> hsf2_work/models/<DD-MM-YYYY-HH-MM>_in_S0/  (8 cores; PC: 1.95 h for 100 events x 25 epochs on 4 threads,
+# so expect ~3-5 h for 300 events).  Progress:  grep epoch logs/train_<ClusterId>.out
+# Self-contained: run.sh activates the Part-II venv and sets every HSF2_* path (getenv = False).
+# Submit from ~/hsf2_condor (AFS; a copy of Optimization/hsf2_condor, logs/ inside it).
+executable     = run.sh
+arguments      = python -m hsf2 train --data latest --level S0 --epochs 25 --threads 8 --label in_S0
+environment    = "OMP_NUM_THREADS=8"
+getenv         = False
+output         = logs/train_$(ClusterId).out
+error          = logs/train_$(ClusterId).err
+log            = logs/train_$(ClusterId).log
+request_cpus   = 8
+request_memory = 12000
++JobFlavour    = "tomorrow"
+queue

@@ -1,0 +1,17 @@
+# ODD export (ACTS CKF chain of Phase 1 + truth + CKF tracks) of one particle file -> hsf2_work/odd_export/<stamp>_<LABEL>/
+#   condor_submit odd_export.sub SEED=1000000 EVENTS=100 LABEL=odd_s1   (seeds: Phase 1's odd_events/particles_seed<k>000000.root)
+# SEED, EVENTS and LABEL have no in-file defaults (a command-line / VARS value must never be shadowed by a file value).
+# Submit from ~/hsf2_condor (AFS; copy of Optimization/hsf2_condor, logs/ inside it) in a shell where  python -c "import acts"  works.
+# 1 CPU (the Sequencer runs on one thread, as the Phase-1 timing), 4 GB as Phase 1's ACTS jobs.
+executable     = odd_export.sh
+arguments      = --events $(EVENTS) --seed $(SEED) --label $(LABEL)
+getenv         = True
+output         = logs/odd_export_$(LABEL)_$(ClusterId).out
+error          = logs/odd_export_$(LABEL)_$(ClusterId).err
+log            = logs/odd_export_$(LABEL)_$(ClusterId).log
+request_cpus   = 1
+request_memory = 4000
+# espresso=20min microcentury=1h longlunch=2h workday=8h tomorrow=1d testmatch=3d nextweek=1w
++JobFlavour    = "workday"
+notification   = Complete
+queue

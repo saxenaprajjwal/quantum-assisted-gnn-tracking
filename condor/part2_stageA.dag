@@ -1,0 +1,40 @@
+# Stage A of the Part-II study on lxplus (one submission; each node starts when its parents succeeded):
+#   download (16 GB, MD5) -> prep (680 events) -> train (S0 IN on 300 events)
+#   -> evaluate val / confirm1..3 with the default knobs, and 1-D scans of the 8 knobs on 20 tune events
+#      (used to re-fix the knob ranges before stage B).
+# Submit from ~/hsf2_condor (AFS); jobs set up their own environment (run.sh):
+#   condor_submit_dag part2_stageA.dag
+# Watch:  condor_q -dag ;  tail -f part2_stageA.dag.dagman.out ;  logs/*.out
+# A failed node can be fixed and the DAG resubmitted: DAGMan resumes from part2_stageA.dag.rescue001.
+JOB download   download_trackml.sub
+JOB prep       trackml_prep.sub
+JOB train      train.sub
+RETRY download 2
+RETRY prep 1
+JOB eval_val   hsf2_cmd.sub
+VARS eval_val  ARGS="evaluate --model latest --split val" NAME="eval_val"
+JOB eval_c1    hsf2_cmd.sub
+VARS eval_c1   ARGS="evaluate --model latest --split confirm1" NAME="eval_c1"
+JOB eval_c2    hsf2_cmd.sub
+VARS eval_c2   ARGS="evaluate --model latest --split confirm2" NAME="eval_c2"
+JOB eval_c3    hsf2_cmd.sub
+VARS eval_c3   ARGS="evaluate --model latest --split confirm3" NAME="eval_c3"
+JOB scan_dphi  hsf2_cmd.sub
+VARS scan_dphi ARGS="scan --model latest --split tune --max-events 20 --param dphi_scale --values 0.1,0.15,0.2,0.25,0.3,0.4,0.5,0.6,0.8,1.0" NAME="scan_dphi"
+JOB scan_deta  hsf2_cmd.sub
+VARS scan_deta ARGS="scan --model latest --split tune --max-events 20 --param deta_scale --values 0.1,0.15,0.2,0.25,0.3,0.4,0.5,0.6,0.8,1.0" NAME="scan_deta"
+JOB scan_z0    hsf2_cmd.sub
+VARS scan_z0   ARGS="scan --model latest --split tune --max-events 20 --param z0_scale --values 0.05,0.1,0.2,0.3,0.4,0.5,0.6,0.8,1.0" NAME="scan_z0"
+JOB scan_chi   hsf2_cmd.sub
+VARS scan_chi  ARGS="scan --model latest --split tune --max-events 20 --param cut_hi --values 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.95" NAME="scan_chi"
+JOB scan_clo   hsf2_cmd.sub
+VARS scan_clo  ARGS="scan --model latest --split tune --max-events 20 --param cut_lo_frac --values 0.1,0.2,0.3,0.5,0.7,0.9,1.0 --set max_degree=2" NAME="scan_clo"
+JOB scan_mdeg  hsf2_cmd.sub
+VARS scan_mdeg ARGS="scan --model latest --split tune --max-events 20 --param max_degree --values 1,2,3,4,5,6,8" NAME="scan_mdeg"
+JOB scan_mhit  hsf2_cmd.sub
+VARS scan_mhit ARGS="scan --model latest --split tune --max-events 20 --param min_hits --values 3,4,5,6,7,8" NAME="scan_mhit"
+JOB scan_merge hsf2_cmd.sub
+VARS scan_merge ARGS="scan --model latest --split tune --max-events 20 --param merge_overlap --values 0,0.1,0.2,0.3,0.5,0.7 --set max_degree=3" NAME="scan_merge"
+PARENT download CHILD prep
+PARENT prep CHILD train
+PARENT train CHILD eval_val eval_c1 eval_c2 eval_c3 scan_dphi scan_deta scan_z0 scan_chi scan_clo scan_mdeg scan_mhit scan_merge

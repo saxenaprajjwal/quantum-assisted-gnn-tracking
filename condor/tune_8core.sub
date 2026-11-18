@@ -1,0 +1,15 @@
+# One 8-core tuning command (the QX2 loop with an objective variant, part2_objectives.dag): like tune_loop.sub,
+# with the hsf2 arguments from ARGS.  No environment line: run.sh sets OMP_NUM_THREADS=1, one thread per worker.
+# Self-contained: run.sh activates the Part-II venv and sets every HSF2_* path (getenv = False). Submit from ~/hsf2_condor.
+executable     = run.sh
+arguments      = python -m hsf2 $(ARGS)
+getenv         = False
+output         = logs/$(NAME:tune8)_$(ClusterId).out
+error          = logs/$(NAME:tune8)_$(ClusterId).err
+log            = logs/$(NAME:tune8)_$(ClusterId).log
+request_cpus   = 8
+request_memory = 16000
++JobFlavour    = "tomorrow"
+# e-mail to <user>@cern.ch when the job ends (success or failure)
+notification   = Complete
+queue

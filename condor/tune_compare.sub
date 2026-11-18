@@ -1,0 +1,17 @@
+# QX1: optimisers on the exact landscape (QUBO closed loops with exact / SA / QAOA samplers vs random, TPE, SA;
+# 20 seeds, budget 100 distinct evaluations each) -> <landscape>/outputs/<stamp>_compare/
+# LANDSCAPE defaults to latest (the newest finished landscape); override with  condor_submit tune_compare.sub LANDSCAPE=/abs/path
+# Self-contained: run.sh activates the Part-II venv and sets every HSF2_* path (getenv = False).
+# Submit from ~/hsf2_condor (AFS; a copy of Optimization/hsf2_condor, logs/ inside it).
+executable     = run.sh
+arguments      = python -m hsf2 tune-compare --landscape $(LANDSCAPE:latest) --seeds 0-19
+getenv         = False
+output         = logs/compare_$(ClusterId).out
+error          = logs/compare_$(ClusterId).err
+log            = logs/compare_$(ClusterId).log
+request_cpus   = 1
+request_memory = 4000
++JobFlavour    = "workday"
+# e-mail to <user>@cern.ch when the job ends (success or failure)
+notification   = Complete
+queue
